@@ -1,0 +1,10 @@
+{
+  "watch": ["src"],
+  "ext": "ts,ejs,json",
+  "ignore": [
+    "public/fe/templates/**",
+    "src/**/*.test.ts",
+    "tests/**"
+  ],
+  "exec": "ts-node ./src/index.ts"
+}

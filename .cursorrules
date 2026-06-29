@@ -1,0 +1,10 @@
+# Cursor Rules — Node Admin
+
+Aturan lengkap & wajib: lihat AGENTS.md (sumber kebenaran). Ringkas:
+
+- Ikuti alur: route → handler(DI) → controller(@injectable, inject IService) → service(@injectable, implements IService, throw AppError) → repository(inject) → entity.
+- DILARANG: `new XService()/XController()` di routes (pakai `handler()`); `return error`/`instanceof Error` (pakai `throw AppError`); `res.render(path.resolve(...))` (pakai `renderView()`); `process.env` di src/modules (pakai `env` dari config/env); tipe kolom vendor (`longtext`/`datetime`) atau `@CreateDateColumn({type})`.
+- Service WAJIB `@injectable` + punya interface `I*Service` + constructor injection dual-mode.
+- Modul/fitur baru: ikuti docs/MODULE_GUIDE.md; tambah test + update README/docs/API.md.
+- Sebelum selesai: `npm run lint:conventions`, `npx tsc --noEmit`, `npm test` harus lolos.
+- Security: urutan middleware ensureAuthenticated→AccessMiddleware; CSRF di form; rate-limit endpoint sensitif; Joi stripUnknown.

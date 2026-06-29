@@ -1,0 +1,15 @@
+.bg-danger-transparant {
+    background: rgba(249, 235, 235, 1);
+}
+
+.bg-blue-transparant {
+    background: var(--Blue-Blue-10---E5F1FC, #E5F1FC);
+}
+
+.text-black {
+    color: black;
+}
+
+.bg-main {
+    background: #EEF2F6;
+}
