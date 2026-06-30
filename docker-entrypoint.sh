@@ -52,11 +52,12 @@ case "${DB_DATABASE:-}" in
     /*|./*) mkdir -p "$(dirname "$DB_DATABASE")" 2>/dev/null || true ;;
 esac
 
-echo "[entrypoint] Running database migrations..."
-if npm run migration:run; then
+echo "[entrypoint] Running database migrations (compiled, low-memory)..."
+if node ./node_modules/typeorm/cli.js migration:run -d ./dist/config/ormconfig.js; then
     echo "[entrypoint] Migrations applied."
 else
-    echo "[entrypoint] WARN: migration:run exited non-zero (already applied or transient); continuing boot."
+    echo "[entrypoint] FATAL: migration gagal — abort boot. Cek koneksi DB & log di atas." >&2
+    exit 1
 fi
 
 # --- 4. Start the compiled server --------------------------------------------
