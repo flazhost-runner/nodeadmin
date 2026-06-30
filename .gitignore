@@ -3,8 +3,9 @@ dist
 *.tsbuildinfo
 .env
 .env.*.bak
-# Database lokal (SQLite dev)
+# Database lokal (SQLite / SQLite-based dev db)
 *.sqlite
+*.db
 # Runtime logs
 dev.log
 *.log
@@ -15,6 +16,3 @@ coverage/
 # Template frontend hasil download on-demand (kecuali default yang di-bundle)
 public/fe/templates/*
 !public/fe/templates/agency-consulting-002-creative-agency.html
-
-# Debug screenshots (lokal, jangan dikomit)
-bug/
