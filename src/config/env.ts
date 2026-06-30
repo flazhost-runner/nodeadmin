@@ -47,6 +47,7 @@ export const env = {
     },
 
     session: {
+        driver: (process.env.SESSION_DRIVER || 'database') as 'redis' | 'database',
         secret: required('SESSION_SECRET'),
         ttlMs: num('SESSION_TTL_HOURS', 6) * 60 * 60 * 1000,
     },

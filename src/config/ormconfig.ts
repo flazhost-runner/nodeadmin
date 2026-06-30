@@ -6,6 +6,7 @@ import { Permission } from '../modules/access/models/permission.entity';
 import { Role } from '../modules/access/models/role.entity';
 import { User } from '../modules/access/models/user.entity';
 import { Setting } from '../modules/setting/models/setting.entity';
+import { AppSession } from '../modules/auth/models/session.entity';
 
 // migExt: '.ts' saat dijalankan lewat ts-node (dev), '.js' saat dari dist (produksi).
 // Ini mencegah glob *.ts mencari file yang tidak ada di dist/ → 0 migrasi → OOM.
@@ -24,7 +25,7 @@ const AppDataSource = createDataSource({
     synchronize: env.db.synchronize,
     logging: env.db.logging,
     connectionLimit: env.db.connectionLimit,
-    entities: [Permission, Role, User, Setting],
+    entities: [Permission, Role, User, Setting, AppSession],
     migrations: [path.resolve(__dirname, `../modules/**/migrations/*${migExt}`)],
 });
 

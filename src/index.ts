@@ -11,7 +11,8 @@ import bcrypt from 'bcryptjs'
 import { createApp, ResponseHandler } from '@flazhost-nodeadmin/core'
 import { User } from './modules/access/models/user.entity'
 import AppDataSource from './config/ormconfig'
-import { clientRedis, RedisStore, cntRedis } from './services/redisClient'
+import { clientRedis, cntRedis } from './services/redisClient'
+import { buildSessionStore } from './services/sessionStore'
 import env from './config/env'
 import appConfig from './config/app'
 import './container' // registrasi DI (repository factories + services)
@@ -104,7 +105,12 @@ const app = createApp({
     ...(isApi ? {} : {
         static: { dir: 'public', maxAge: env.isProd ? '7d' : 0 },
         session: { secret: env.session.secret, ttlMs: env.session.ttlMs },
-        sessionStore: isTest ? undefined : new RedisStore({ client: clientRedis as any, ttl: env.session.ttlMs }),
+        sessionStore: isTest ? undefined : buildSessionStore({
+            driver: env.session.driver,
+            redisClient: clientRedis,
+            dataSource: AppDataSource,
+            ttlMs: env.session.ttlMs,
+        }),
         globalLocals,
     }),
     ensureRedisConnected,
