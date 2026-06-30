@@ -7,6 +7,10 @@ import { Role } from '../modules/access/models/role.entity';
 import { User } from '../modules/access/models/user.entity';
 import { Setting } from '../modules/setting/models/setting.entity';
 
+// migExt: '.ts' saat dijalankan lewat ts-node (dev), '.js' saat dari dist (produksi).
+// Ini mencegah glob *.ts mencari file yang tidak ada di dist/ → 0 migrasi → OOM.
+const migExt = path.extname(__filename);
+
 // Dialect dibaca apa adanya dari env — TypeORM mendukung mysql | mariadb |
 // postgres | cockroachdb | sqlite | better-sqlite3 | mssql | oracle | dll.
 // Percabangan dialect/pool/timezone ditangani core; app menyuntik entity & migration.
@@ -21,7 +25,7 @@ const AppDataSource = createDataSource({
     logging: env.db.logging,
     connectionLimit: env.db.connectionLimit,
     entities: [Permission, Role, User, Setting],
-    migrations: [path.resolve(__dirname, '../modules/**/migrations/*.ts')],
+    migrations: [path.resolve(__dirname, `../modules/**/migrations/*${migExt}`)],
 });
 
 export default AppDataSource;
