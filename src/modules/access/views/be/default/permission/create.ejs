@@ -19,7 +19,14 @@
     </div>
     <div class="mb-3">
       <label for="method" class="form-label fw-semibold">Method</label>
-      <input id="method" type="text" class="form-control <% if(getError('method')) { %>is-invalid<% } %>" name="method" value="">
+      <select id="method" name="method" class="form-control <% if(getError('method')) { %>is-invalid<% } %>">
+        <option value="">-- Select Method --</option>
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+        <option value="PUT">PUT</option>
+        <option value="PATCH">PATCH</option>
+        <option value="DELETE">DELETE</option>
+      </select>
       <% if(getError('method')) { %><div class="invalid-feedback"><%= getError('method')['msg'] %></div><% } %>
     </div>
     <div class="mb-3">

@@ -22,8 +22,9 @@ export default defineConfig({
     retries: 0,
     use: {
         baseURL: 'http://localhost:3000',
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
+        trace: 'retain-on-failure',      // simpan trace (replay step-by-step) bila test gagal
+        screenshot: 'only-on-failure',   // screenshot otomatis bila test gagal
+        video: 'retain-on-failure',      // rekam video bila test gagal
     },
     projects: only ? allProjects.filter(p => only.split(',').includes(p.name)) : allProjects,
     webServer: {

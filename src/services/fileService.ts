@@ -35,8 +35,7 @@ class FileService {
     }
 
     getFile(fileName: string, is_public: boolean = false): string {
-        // Graceful degradation: bila storage belum dikonfigurasi, sajikan path lokal
-        if (!storageConfig.accessKeyId || !storageConfig.secretAccessKey) {
+        if (storageConfig.driver !== 'local' && (!storageConfig.accessKeyId || !storageConfig.secretAccessKey)) {
             return fileName.startsWith('/') ? fileName : `/${fileName}`
         }
         if (is_public) {
@@ -46,14 +45,14 @@ class FileService {
     }
 
     getSignedUrl(fileName: string, ttlSeconds: number = 600): string {
-        if (!storageConfig.accessKeyId || !storageConfig.secretAccessKey) {
+        if (storageConfig.driver !== 'local' && (!storageConfig.accessKeyId || !storageConfig.secretAccessKey)) {
             return fileName.startsWith('/') ? fileName : `/${fileName}`
         }
         return getStorageClient().signatureUrl(fileName, ttlSeconds)
     }
 
     async listFiles(prefix: string, urlFor?: (key: string) => string): Promise<{ name: string; url: string }[]> {
-        if (!storageConfig.accessKeyId || !storageConfig.secretAccessKey) return []
+        if (storageConfig.driver !== 'local' && (!storageConfig.accessKeyId || !storageConfig.secretAccessKey)) return []
         try {
             const objects = await getStorageClient().list(prefix, 100)
             return objects.map((o) => ({ name: o.name, url: urlFor ? urlFor(o.name) : this.getFile(o.name) }))
@@ -73,8 +72,11 @@ class FileService {
 
     // Bangun public URL berdasarkan driver & konfigurasi
     private _publicUrl(fileName: string): string {
-        const { driver, bucket, endpoint, region, ssl } = storageConfig
+        const { driver, basePath, bucket, endpoint, region, ssl } = storageConfig
         const protocol = ssl ? 'https' : 'http'
+        if (driver === 'local') {
+            return `/${basePath}/${fileName}`.replace(/\/+/g, '/')
+        }
         if (driver === 's3') {
             if (endpoint) {
                 // Path-style: MinIO, Cloudflare R2, S3-compatible custom
