@@ -29,6 +29,16 @@ describe('RoleService (integration, sqlite)', () => {
         await expect(roleSvc.store({ name: 'Dup', status: 'Active' })).rejects.toThrow()
     })
 
+    it('edit mengembalikan role yang ada', async () => {
+        const role: any = await roleSvc.store({ name: 'Findable', status: 'Active' })
+        const found: any = await roleSvc.edit(role.id)
+        expect(found.id).toBe(role.id)
+    })
+
+    it('edit melempar NotFound bila role tidak ada (regresi: dulu balik null → HTTP 200)', async () => {
+        await expect(roleSvc.edit('00000000-0000-0000-0000-000000000000')).rejects.toThrow(/not found/i)
+    })
+
     it('permission_assign_selected menyimpan SEMUA permission (regресi bug forEach async)', async () => {
         const role: any = await roleSvc.store({ name: 'WithPerms', status: 'Active' })
         const permIds = await makePermissions(3)

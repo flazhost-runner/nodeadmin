@@ -7,7 +7,7 @@ export class CreateSessionTable1782815380885 implements MigrationInterface {
             columns: [
                 { name: 'id', type: 'varchar', length: '128', isPrimary: true },
                 { name: 'data', type: 'text' },
-                { name: 'expires_at', type: 'datetime' },
+                { name: 'expires_at', type: queryRunner.connection.options.type === 'postgres' ? 'timestamp' : 'datetime' },
             ],
         }), true)
     }

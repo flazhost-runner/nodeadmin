@@ -49,6 +49,9 @@ export default class RoleService implements IRoleService {
 
 	public async edit(id: string) {
 		const data = await this.roleRepository.findOne({ where: { id } })
+		if (!data) {
+			throw new NotFoundError('Role not found')
+		}
 		return data
 	}
 

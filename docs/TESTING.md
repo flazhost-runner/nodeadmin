@@ -60,6 +60,14 @@ npm run test:e2e          # Playwright — butuh app + MySQL + Redis hidup
 - Firefox/WebKit butuh system deps (`sudo npx playwright install-deps`).
 - Playwright `webServer` menjalankan `npm run start:dev` (pakai DB nyata + admin seed `admin@admin.com` / `12345678`).
 
+## Postman / uji API manual
+
+Koleksi Postman tersimpan di **`docs/postman/NodeAdmin.postman_collection.json`** (format v2.1.0).
+
+- Import ke Postman → set variable `base_url` (default `http://localhost:3000`).
+- Jalankan app lebih dulu: `APP_PORT=3000 npm run start:dev` (butuh DB + admin seed `admin@admin.com` / `12345678`).
+- Folder **Scenario: Role CRUD (E2E)** bisa dijalankan berurutan via Collection Runner; pre-request folder membuat nama role unik tiap run sehingga idempotent (aman diulang).
+
 ## Pemetaan jenis testing
 
 | Jenis | Di mana |

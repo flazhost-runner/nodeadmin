@@ -92,6 +92,9 @@ export default class UserService implements IUserService {
   public async edit(id: string) {
     const roles = await this.roleRepository.find()
     const data = await this.userRepository.findOne({ where: { id }, relations: ['roles'] })
+    if (!data) {
+      throw new NotFoundError('User not found')
+    }
     return { data, roles }
   }
 

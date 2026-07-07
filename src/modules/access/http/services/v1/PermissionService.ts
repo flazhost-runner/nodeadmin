@@ -87,6 +87,9 @@ export default class PermissionService implements IPermissionService {
 
 	public async edit(id: string) {
 		const data = await this.permissionRepository.findOne({ where: { id } })
+		if (!data) {
+			throw new NotFoundError('Permission not found')
+		}
 		return data
 	}
 

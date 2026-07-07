@@ -9,9 +9,16 @@ import { env } from '../config/env'
 
 export const RedisStore = connectRedis(session)
 
+// Managed Redis (flazhost) berada di belakang HAProxy yang route berdasarkan SNI:
+// node-redis TIDAK mengirim SNI hanya dari URL `rediss://` → HAProxy menutup koneksi
+// (SocketClosedUnexpectedly). Kirim `servername` eksplisit — hanya untuk TLS, agar
+// `redis://` lokal (non-TLS) tak berubah.
+const redisIsTls = env.redis.url.startsWith('rediss://')
+
 export const clientRedis = createClient({
     url: env.redis.url,
     legacyMode: true,
+    ...(redisIsTls && { socket: { tls: true, servername: new URL(env.redis.url).hostname } }),
 })
 
 clientRedis.on('error', (err) => {

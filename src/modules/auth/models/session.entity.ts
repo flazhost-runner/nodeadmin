@@ -8,6 +8,6 @@ export class AppSession {
     @Column({ type: 'text' })
     data!: string
 
-    @Column({ name: 'expires_at', type: 'datetime' })
+    @Column({ name: 'expires_at' })
     expiresAt!: Date
 }
