@@ -1,6 +1,11 @@
 import path from 'path'
-import { getStorageClient, storageConfig } from '../config/storageClient'
+import { getStorageClient, storageConfig, LOCAL_URL_PREFIX } from '../config/storageClient'
 import sharp from 'sharp'
+
+// Avatar placeholder default — aset publik statis, tidak bergantung driver storage
+// (dulu di-route ke storage key 'modules/access/user/user.png' → 404 di local & oss).
+const DEFAULT_AVATAR_KEY = 'modules/access/user/user.png'
+const DEFAULT_AVATAR_URL = '/be/default/img/avatar.svg'
 
 class FileService {
     async uploadFile(fileName: string, fileContent: Buffer, is_public: boolean = false): Promise<string> {
@@ -35,6 +40,7 @@ class FileService {
     }
 
     getFile(fileName: string, is_public: boolean = false): string {
+        if (fileName === DEFAULT_AVATAR_KEY) return DEFAULT_AVATAR_URL
         if (storageConfig.driver !== 'local' && (!storageConfig.accessKeyId || !storageConfig.secretAccessKey)) {
             return fileName.startsWith('/') ? fileName : `/${fileName}`
         }
@@ -72,10 +78,10 @@ class FileService {
 
     // Bangun public URL berdasarkan driver & konfigurasi
     private _publicUrl(fileName: string): string {
-        const { driver, basePath, bucket, endpoint, region, ssl } = storageConfig
+        const { driver, bucket, endpoint, region, ssl } = storageConfig
         const protocol = ssl ? 'https' : 'http'
         if (driver === 'local') {
-            return `/${basePath}/${fileName}`.replace(/\/+/g, '/')
+            return `${LOCAL_URL_PREFIX}/${fileName}`.replace(/\/+/g, '/')
         }
         if (driver === 's3') {
             if (endpoint) {

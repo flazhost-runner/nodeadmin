@@ -65,6 +65,20 @@ function s3PresignedUrl(opts: {
 }
 
 // ---------------------------------------------------------------------------
+// Storage lokal: prefix URL stabil (dipisah dari path filesystem). createApp
+// me-mount `localStorageDir()` di prefix ini, sehingga file lokal bisa dirender.
+// Dipisah dari basePath agar STORAGE_BASE_PATH absolut (mis. /app/storage di
+// Docker) tetap menghasilkan URL yang valid (/storage/<key>, bukan //app/...).
+// ---------------------------------------------------------------------------
+export const LOCAL_URL_PREFIX = '/storage'
+
+/** Direktori absolut penyimpanan lokal (resolusi STORAGE_BASE_PATH). */
+export function localStorageDir(): string {
+    const bp = env.storage.basePath
+    return path.isAbsolute(bp) ? bp : path.join(process.cwd(), bp)
+}
+
+// ---------------------------------------------------------------------------
 // Driver: Local filesystem
 // ---------------------------------------------------------------------------
 function buildLocalClient(basePath: string): StorageClient {
@@ -77,8 +91,8 @@ function buildLocalClient(basePath: string): StorageClient {
             fs.writeFileSync(dest, buffer)
         },
         signatureUrl(key) {
-            // Return a web-relative URL; serve the base path as a static dir
-            return `/${basePath}/${key}`.replace(/\/+/g, '/')
+            // URL web di bawah prefix static yang di-mount createApp (lihat LOCAL_URL_PREFIX)
+            return `${LOCAL_URL_PREFIX}/${key}`.replace(/\/+/g, '/')
         },
         async list(prefix) {
             const dir = path.join(absBase, prefix)
