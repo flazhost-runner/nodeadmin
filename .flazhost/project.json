@@ -1,12 +1,8 @@
 {
   "name": "NodeAdmin",
   "language": "nodejs",
-  "install": [
-    "npm install"
-  ],
-  "migrate": [
-    "npm run migration:run"
-  ],
+  "install": ["npm install"],
+  "migrate": ["npm run migration:run"],
   "start": "npm run start:dev",
   "url": "http://localhost:${APP_PORT}",
   "readyPath": "/"
